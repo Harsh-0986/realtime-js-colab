@@ -57,6 +57,7 @@ footer a {
 	font-size: 16px;
 	cursor: pointer;
 	transition: all 0.3s ease-in-out;
+	font-weight: bold;
 }
 
 .joinBtn {
@@ -138,4 +139,14 @@ footer a:hover {
 	margin-top: 20px;
 	background-color: #4aed88;
 	width: 100%;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap");
+
+.CodeMirror {
+	min-height: calc(100vh - 20px);
+	font-size: 20px;
+	line-height: 1.6;
+	padding-top: 20px;
+	font-family: "Source Code Pro", monospace;
 }
