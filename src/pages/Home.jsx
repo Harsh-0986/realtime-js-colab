@@ -1,8 +1,10 @@
 import { v4 as uuidV4 } from "uuid";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+	const navigate = useNavigate();
 	const [id, setId] = useState();
 	const [userName, setUserName] = useState();
 
@@ -13,6 +15,26 @@ const Home = () => {
 
 		//Toast
 		toast.success("Created a new room");
+	};
+
+	const joinRoom = () => {
+		if (!id || !userName) {
+			toast.error("All the flieds are required!");
+			return;
+		}
+
+		//Redirect
+		navigate(`/editor/${id}`, {
+			state: {
+				userName,
+			},
+		});
+	};
+
+	const handleInputEnter = (e) => {
+		if (e.code === "Enter") {
+			joinRoom();
+		}
 	};
 
 	return (
@@ -31,6 +53,7 @@ const Home = () => {
 						className="inputBox"
 						value={id}
 						onChange={(e) => setId(e.target.value)}
+						onKeyUp={handleInputEnter}
 					/>
 					<input
 						type="text"
@@ -38,8 +61,11 @@ const Home = () => {
 						className="inputBox"
 						onChange={(e) => setUserName(e.target.value)}
 						value={userName}
+						onKeyUp={handleInputEnter}
 					/>
-					<button className="btn joinBtn">Join</button>
+					<button className="btn joinBtn" onClick={joinRoom}>
+						Join
+					</button>
 					<span className="createInfo">
 						<a
 							onClick={createNewRoom}
