@@ -1,12 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import ACTIONS from "../actions";
 import Client from "../components/Client";
 import Editor from "../components/Editor";
+import { initSocket } from "../socket";
+import {
+	Navigate,
+	useLocation,
+	useNavigate,
+	useParams,
+} from "react-router-dom";
+import toast from "react-hot-toast";
 
 const EditorPage = () => {
+	const reactNavigator = useNavigate();
+	const socketRef = useRef(null);
+	const location = useLocation();
+	const { roomId } = useParams();
+	const handleErrors = (e) => {
+		console.log("socket error", e);
+		toast.error("Socket connection failed, try again later.");
+		reactNavigator("/");
+	};
+
+	useEffect(() => {
+		const init = async () => {
+			socketRef.current = await initSocket();
+			socketRef.current.on("connect_error", (err) => handleErrors(err));
+			socketRef.current.on("connect_failed", (err) => handleErrors(err));
+			socketRef.current.emit(ACTIONS.JOIN, {
+				roomId,
+				username: location.state?.userName,
+			});
+		};
+
+		init();
+	}, []);
+
 	const [clients, setClients] = useState([
 		{ socketId: 1, userName: "Harsh Shah" },
 		{ socketId: 2, userName: "Rohit Shah" },
 	]);
+
+	if (!location.state) {
+		return <Navigate to="/" />;
+	}
 
 	return (
 		<div className="mainWrap">
