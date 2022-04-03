@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 const EditorPage = () => {
 	const reactNavigator = useNavigate();
 	const socketRef = useRef(null);
+	const codeRef = useRef(null);
 	const location = useLocation();
 	const { roomId } = useParams();
 	const handleErrors = (e) => {
@@ -40,6 +41,10 @@ const EditorPage = () => {
 						toast.success(`${username} joined the room`);
 					}
 					setClients(clients);
+					socketRef.current.emit(ACTIONS.SYNC_CODE, {
+						code: codeRef.current,
+						socketId,
+					});
 				}
 			);
 
@@ -115,7 +120,13 @@ const EditorPage = () => {
 				</button>
 			</div>
 			<div className="editorWrap">
-				<Editor socketRef={socketRef} roomId={roomId} />
+				<Editor
+					socketRef={socketRef}
+					roomId={roomId}
+					onCodeChange={(code) => {
+						codeRef.current = code;
+					}}
+				/>
 			</div>
 		</div>
 	);
