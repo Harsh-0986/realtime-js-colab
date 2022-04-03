@@ -58,6 +58,12 @@ const EditorPage = () => {
 		};
 
 		init();
+
+		return () => {
+			socketRef.current.disconnect();
+			socketRef.current.off(ACTIONS.JOINED);
+			socketRef.current.off(ACTIONS.DISCONNECTED);
+		};
 	}, []);
 
 	const [clients, setClients] = useState([]);
