@@ -31,15 +31,23 @@ const EditorPage = () => {
 				roomId,
 				username: location.state?.userName,
 			});
+
+			//Listening for joined event
+			socketRef.current.on(
+				ACTIONS.JOINED,
+				({ clients, username, socketId }) => {
+					if (username !== location.state?.username) {
+						toast.success(`${username} joined the room`);
+					}
+					setClients(clients);
+				}
+			);
 		};
 
 		init();
 	}, []);
 
-	const [clients, setClients] = useState([
-		{ socketId: 1, userName: "Harsh Shah" },
-		{ socketId: 2, userName: "Rohit Shah" },
-	]);
+	const [clients, setClients] = useState([]);
 
 	if (!location.state) {
 		return <Navigate to="/" />;
@@ -60,7 +68,7 @@ const EditorPage = () => {
 					<div className="clientsList">
 						{clients.map((client) => (
 							<Client
-								userName={client.userName}
+								userName={client.username}
 								key={client.socketId}
 							/>
 						))}
